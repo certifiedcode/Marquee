@@ -1,6 +1,7 @@
- window.addEventListener(
+window.addEventListener(
     "message",
     function (event) {
+      // only accept messages from same frame
       if (event.data.marquee) {
         console.log(event.data);
         const elementId = event.data.repeater;
@@ -34,10 +35,12 @@
                       window.getComputedStyle(styleRef).borderRadius
                     } !important;
                     --mq-padding-y: ${
+                      // to find the padding, check  marqueefyElement.children[1] y axis and compare with marqueefyElement.children[0] y axis
                         marqueefyElement.children[1].getBoundingClientRect()
                             .y - marqueefyElement.children[0].getBoundingClientRect().y
                     }px !important;
                     --mq-padding-x: ${
+                      // to find the padding, check  marqueefyElement.children[1] x axis and compare with marqueefyElement.children[0] x axis
                         marqueefyElement.children[1].getBoundingClientRect()
                             .x - marqueefyElement.children[0].getBoundingClientRect().x}px !important;
                     --mq-font-size: ${
@@ -51,17 +54,22 @@
             }`;
 
             document.head.appendChild(style);
+            // delete the style element
             styleRef.remove();
           }
+          // set the class as marqueefy only
             marqueefyElement.setAttribute("class", "marqueefy");
             
           marqueefyElement.children[0].classList.add("content");
+          // add style to the marqueefyElement flex-wrap: none
+          // if direction is given, add data-mq-direction
           if (event.data.direction) {
             marqueefyElement.setAttribute(
               "data-mq-direction",
               event.data.direction
             );
           }
+          // if speed is given, add data-mq-speed
           if (event.data.speed) {
             marqueefyElement.setAttribute("data-mq-speed", event.data.speed);
           }
@@ -76,8 +84,10 @@
             add(marqueefyElement.parentElement);
           }
         });
+        // keep checking if clas marqueefy are there, if no, add them
         const checker = setInterval(() => {
           const marqueefyElement = document.getElementById(elementId);
+          // check class marqueefy
           if (
             marqueefyElement.parentElement &&
             !marqueefyElement.parentElement.classList.contains("marqueefy")
